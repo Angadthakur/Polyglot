@@ -31,7 +31,7 @@ class TextTranslation extends StatelessWidget {
           
         )
         ),
-        titleSpacing:25,
+        titleSpacing:40,
 
         title: const Text(
           "Text Translation",
