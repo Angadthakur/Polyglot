@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:translator_app_polyglot/features/Text_translation/screen/text_translation.dart';
+import 'package:translator_app_polyglot/features/Voice_translation/screens/voice_translation_screen.dart';
 import 'package:translator_app_polyglot/features/presentation/widgets/feature_card.dart';
 
 class Homescreen extends StatelessWidget {
@@ -73,7 +74,12 @@ class Homescreen extends StatelessWidget {
                 subtitle: "Speak into your mic for a real-time translation.",
                 icon: Icons.mic,
                 onTap: () {
-                  // TODO: Navigate to the Voice Translation screen
+                  //Navigate to the Voice Translation screen
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const VoiceTranslationScreen(),
+                    ),
+                  );
                   print('Voice Translation Tapped!');
                 },
               ),
