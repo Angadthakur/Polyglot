@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:translator_app_polyglot/features/Text_translation/screen/text_translation.dart';
+import 'package:translator_app_polyglot/features/Text_translation/widgets/input_text_field.dart';
 import 'package:translator_app_polyglot/features/presentation/screens/homescreen.dart';
 import 'package:translator_app_polyglot/features/presentation/widgets/feature_card.dart';
 
