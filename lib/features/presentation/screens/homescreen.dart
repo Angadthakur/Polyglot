@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translator_app_polyglot/features/Image_translation/screen/image_translation_screen.dart';
 import 'package:translator_app_polyglot/features/Text_translation/screen/text_translation.dart';
 import 'package:translator_app_polyglot/features/Voice_translation/screens/voice_translation_screen.dart';
 import 'package:translator_app_polyglot/features/presentation/widgets/feature_card.dart';
@@ -89,7 +90,12 @@ class Homescreen extends StatelessWidget {
                     "Use your camera to translate text from the world around you.",
                 icon: Icons.camera_alt,
                 onTap: () {
-                  // TODO: Navigate to the Image Translation screen
+                  //Navigate to the Image Translation screen
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const ImageTranslationScreen(),
+                    ),
+                  );
                   print('Image Translation Tapped!');
                 },
               ),
