@@ -80,7 +80,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const Homescreen()),
             );
           },

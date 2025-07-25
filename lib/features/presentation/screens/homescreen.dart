@@ -62,7 +62,7 @@ class Homescreen extends StatelessWidget {
                 icon: Icons.text_fields,
                 onTap: () {
                   //Navigate to the Text Translation screen
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const TextTranslation(),
                     ),
@@ -76,7 +76,7 @@ class Homescreen extends StatelessWidget {
                 icon: Icons.mic,
                 onTap: () {
                   //Navigate to the Voice Translation screen
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const VoiceTranslationScreen(),
                     ),
@@ -91,7 +91,7 @@ class Homescreen extends StatelessWidget {
                 icon: Icons.camera_alt,
                 onTap: () {
                   //Navigate to the Image Translation screen
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ImageTranslationScreen(),
                     ),

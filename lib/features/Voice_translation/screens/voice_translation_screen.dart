@@ -33,7 +33,7 @@ class _VoiceTranslationScreenState extends State<VoiceTranslationScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: (){
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const Homescreen()));
 
         print("Back to Home Screen");
