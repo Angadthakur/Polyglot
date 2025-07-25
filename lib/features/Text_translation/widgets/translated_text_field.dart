@@ -3,8 +3,15 @@ import 'package:flutter/services.dart';
 
 class TranslatedTextField extends StatelessWidget {
   final String translatedText;
+  final String targetLanguage;
+  final VoidCallback onListenPressed;
 
-  const TranslatedTextField({super.key, required this.translatedText});
+  const TranslatedTextField({
+    super.key, 
+    required this.translatedText,
+    required this.targetLanguage,
+    required this.onListenPressed,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +26,8 @@ class TranslatedTextField extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Text(
-                  'To: Spanish', 
+                 Text(
+                  'To: $targetLanguage', 
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black54,
@@ -41,10 +48,7 @@ class TranslatedTextField extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.volume_up_outlined),
                   tooltip: 'Listen',
-                  onPressed: () {
-                    // TODO: Add Text-to-Speech functionality
-                    print("Text-to-speech tapped");
-                  },
+                  onPressed: onListenPressed,
                 ),
               ],
             ),
