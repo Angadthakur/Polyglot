@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Required for clipboard functionality
+import 'package:flutter/services.dart'; 
 
 class InputTextField extends StatefulWidget {
-  const InputTextField({super.key});
+  final TextEditingController controller;
+
+  const InputTextField({
+    super.key,
+    required this.controller
+    });
 
   @override
   State<InputTextField> createState() => _InputTextFieldState();
 }
 
 class _InputTextFieldState extends State<InputTextField> {
-  // A controller to manage the text in the TextField
-  final _textController = TextEditingController();
-
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the widget tree.
-    _textController.dispose();
     super.dispose();
   }
 
@@ -50,7 +50,7 @@ class _InputTextFieldState extends State<InputTextField> {
                     onPressed: () {
                       // Copies the text from the controller to the clipboard
                       Clipboard.setData(
-                        ClipboardData(text: _textController.text),
+                        ClipboardData(text: widget.controller.text),
                       );
                       // Show a confirmation message
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +64,7 @@ class _InputTextFieldState extends State<InputTextField> {
                     tooltip: 'Clear Text',
                     onPressed: () {
                       // Clears the text field using the controller
-                      _textController.clear();
+                      widget.controller.clear();
                       print("Text cleared");
                     },
                   ),
@@ -75,7 +75,7 @@ class _InputTextFieldState extends State<InputTextField> {
 
               Expanded(
                 child: TextField(
-                  controller: _textController,
+                  controller: widget.controller,
                   maxLines: null,
                   expands: true,
                   style: const TextStyle(fontSize: 18),
