@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 
 class InputTextField extends StatefulWidget {
   final TextEditingController controller;
+  final String sourceLanguage;
 
   const InputTextField({
     super.key,
-    required this.controller
+    required this.controller,
+    required this.sourceLanguage,
     });
 
   @override
@@ -34,8 +36,8 @@ class _InputTextFieldState extends State<InputTextField> {
             children: [
               Row(
                 children: [
-                  const Text(
-                    'Translate from: English',
+                  Text(
+                    'From: ${widget.sourceLanguage}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black54,
