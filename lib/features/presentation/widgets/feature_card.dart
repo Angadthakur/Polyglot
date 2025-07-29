@@ -17,7 +17,7 @@ class FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       height: 170,
       child: Card(
         shape: RoundedRectangleBorder(
@@ -30,7 +30,7 @@ class FeatureCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
       
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
                 Icon(
