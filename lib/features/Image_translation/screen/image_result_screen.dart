@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translator_app_polyglot/features/Image_translation/screen/image_translation_screen.dart';
 
 class ImageResultScreen extends StatelessWidget {
   final String recognizedText;
@@ -15,8 +16,32 @@ class ImageResultScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 186, 52, 210),
-        title: const Text('Translation Result'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ImageTranslationScreen(),
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 30,
+            color: Colors.black,
+          ),
+        ),
+        titleSpacing: 30,
+        title: const Text(
+          'Translation Result',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -56,10 +81,12 @@ class ImageResultScreen extends StatelessWidget {
                 ),
               ),
             ),
-                        Expanded(
+            Expanded(
               child: Card(
                 margin: const EdgeInsets.all(8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 elevation: 8,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -68,7 +95,11 @@ class ImageResultScreen extends StatelessWidget {
                     children: [
                       const Text(
                         'Translation',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 186, 52, 210)),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 186, 52, 210),
+                        ),
                       ),
                       const Divider(),
                       const SizedBox(height: 8),
