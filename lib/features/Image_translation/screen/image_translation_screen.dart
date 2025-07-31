@@ -1,6 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:translator_app_polyglot/core/api/ocr_service.dart';
+import 'package:translator_app_polyglot/core/api/translation_service.dart';
+import 'package:translator_app_polyglot/core/utils/constants.dart';
+import 'package:translator_app_polyglot/core/widgets/language_selector.dart';
 import 'package:translator_app_polyglot/features/Image_translation/screen/image_result_screen.dart';
 import 'package:translator_app_polyglot/features/presentation/screens/homescreen.dart';
 
@@ -14,6 +18,12 @@ class ImageTranslationScreen extends StatefulWidget {
 class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
   File? _selectedImage;
   bool _isProcessing = false;
+
+  final OcrService _ocrService = OcrService();
+  final TranslationService _translationService = TranslationService();
+
+  String _targetLanguageCode = "en";
+  String _targetLanguageName = "English";
 
   Future<void> _pickImageFromGallery() async {
     final ImagePicker picker = ImagePicker();
@@ -46,29 +56,54 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
     }
   }
 
-  void _translateImage() {
+  Future<void> _translateImage() async {
     if (_selectedImage == null) return;
     setState(() {
       _isProcessing = true;
     });
-    print("Translating image...");
+    try {
+      final recognizedText = await _ocrService.recognizeText(_selectedImage!);
 
-    //FAKE:Simulate a delay for API calls
-    Future.delayed(const Duration(seconds: 2), () {
-      String fakeRecognizedText = "This text was found on the image.";
-      String fakeTranslatedText = "Este texto fue encontrado en la imagen.";
+      if (recognizedText.trim().isEmpty ||
+          recognizedText.startsWith("Error:")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Could not find any text in the image")),
+        );
+        setState(() {
+          _isProcessing = false;
+        });
+        return;
+      }
 
-      setState(() {
-        _isProcessing = false;
-      });
+      final translationResult = await _translationService.translate(
+        recognizedText,
+        _targetLanguageCode,
+      );
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ImageResultScreen(
-            recognizedText: fakeRecognizedText,
-            translatedText: fakeTranslatedText,
+            recognizedText: recognizedText,
+            translatedText: translationResult.text,
           ),
         ),
       );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("An error occurred during translation.")),
+      );
+      print("Error during image translation process : $e");
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  void _onTargetLanguageChanged(String newCode){
+    setState(() {
+      _targetLanguageCode = newCode;
+      _targetLanguageName = supportedLanguages.firstWhere((lang) => lang.code == newCode).name;
     });
   }
 
@@ -80,9 +115,9 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const Homescreen()),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => const Homescreen()));
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -90,7 +125,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
             color: Colors.black,
           ),
         ),
-        titleSpacing: 40,
+        titleSpacing: 30,
         title: const Text(
           'Image Translation',
           style: TextStyle(
@@ -105,6 +140,41 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Card(
+              margin: const EdgeInsets.only(bottom: 16),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Translate To:',
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    ),
+                    const Spacer(),
+                    DropdownButton<String>(
+                      value: _targetLanguageCode,
+                      underline: const SizedBox(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          _onTargetLanguageChanged(newValue);
+                        }
+                      },
+                      items: supportedLanguages.map<DropdownMenuItem<String>>((Language language) {
+                        return DropdownMenuItem<String>(
+                          value: language.code,
+                          child: Text(
+                            language.name,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),            
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -112,8 +182,11 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
                   border: Border.all(color: Colors.grey.shade400, width: 2),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: _selectedImage == null
-                    ? const Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (_selectedImage == null)
+                      const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -133,10 +206,14 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
                           ],
                         ),
                       )
-                    : ClipRRect(
+                    else
+                      ClipRRect(
                         borderRadius: BorderRadius.circular(13),
                         child: Image.file(_selectedImage!, fit: BoxFit.contain),
                       ),
+                    if (_isProcessing) const CircularProgressIndicator(),
+                  ],
+                ),
               ),
             ),
 
