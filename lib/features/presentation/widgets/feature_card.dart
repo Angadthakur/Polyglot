@@ -17,8 +17,8 @@ class FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      height: 170,
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      height: 270,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -26,16 +26,16 @@ class FeatureCard extends StatelessWidget {
         elevation: 8,
       
         child: InkWell(
-          onTap: onTap, // The function that runs when tapped on the card
+          onTap: onTap,
           borderRadius: BorderRadius.circular(15),
       
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(15.0),
             child: Row(
               children: [
                 Icon(
                   icon,
-                  size: 70,
+                  size: 90,
                   color: Color.fromARGB(255, 186, 52, 210),
                 ),
       
@@ -60,7 +60,7 @@ class FeatureCard extends StatelessWidget {
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 25,
+                          fontSize: 35,
                           fontWeight: FontWeight.bold
                         ),
                       ),
@@ -73,7 +73,7 @@ class FeatureCard extends StatelessWidget {
                        Text(
                     subtitle,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black54
                     ),
