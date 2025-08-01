@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:translator_app_polyglot/features/Image_translation/screen/image_translation_screen.dart';
 import 'package:translator_app_polyglot/features/Text_translation/screen/text_translation.dart';
-import 'package:translator_app_polyglot/features/Voice_translation/screens/voice_translation_screen.dart';
 import 'package:translator_app_polyglot/features/presentation/widgets/feature_card.dart';
 
 class Homescreen extends StatelessWidget {
@@ -24,15 +23,7 @@ class Homescreen extends StatelessWidget {
               fontStyle: FontStyle.italic,
             ),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings, color: Colors.black, size: 30),
-              onPressed: () {
-                //TODO: Navigate to setting page
-                print("Settings Tapped!");
-              },
-            ),
-          ],
+
         ),
         body: Container(
           width: double.infinity,
@@ -47,8 +38,7 @@ class Homescreen extends StatelessWidget {
             ),
           ),
           child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
+            child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 40),
@@ -71,20 +61,7 @@ class Homescreen extends StatelessWidget {
                       print("Text Translation Tapped!");
                     },
                   ),
-                  FeatureCard(
-                    title: 'Voice Translation',
-                    subtitle: "Speak into your mic for a real-time translation.",
-                    icon: Icons.mic,
-                    onTap: () {
-                      //Navigate to the Voice Translation screen
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const VoiceTranslationScreen(),
-                        ),
-                      );
-                      print('Voice Translation Tapped!');
-                    },
-                  ),
+
                   FeatureCard(
                     title: 'Image Translation',
                     subtitle:
@@ -102,7 +79,7 @@ class Homescreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+            
           ),
         ),
       );
