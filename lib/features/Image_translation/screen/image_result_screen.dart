@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:translator_app_polyglot/features/Image_translation/screen/image_translation_screen.dart';
 
+
 class ImageResultScreen extends StatelessWidget {
   final String recognizedText;
   final String translatedText;

@@ -57,7 +57,7 @@ class TranslatedTextField extends StatelessWidget {
 
             Expanded(
               child: SingleChildScrollView(
-                child: Container(
+                child: SizedBox(
                   width: double.infinity, // Ensures text aligns left
                   child: Text(
                     translatedText,

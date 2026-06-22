@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
+import 'package:translator_app_polyglot/core/utils/app_logger.dart';
 
 class InputTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -58,7 +59,7 @@ class _InputTextFieldState extends State<InputTextField> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Copied to Clipboard')),
                       );
-                      print("Text copied");
+                      AppLogger.i("Text copied");
                     },
                   ),
                   IconButton(
@@ -67,7 +68,7 @@ class _InputTextFieldState extends State<InputTextField> {
                     onPressed: () {
                       // Clears the text field using the controller
                       widget.controller.clear();
-                      print("Text cleared");
+                      AppLogger.i("Text cleared");
                     },
                   ),
                 ],

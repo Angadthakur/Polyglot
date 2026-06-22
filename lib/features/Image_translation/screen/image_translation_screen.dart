@@ -7,6 +7,7 @@ import 'package:translator_app_polyglot/core/utils/constants.dart';
 import 'package:translator_app_polyglot/core/widgets/language_selector.dart';
 import 'package:translator_app_polyglot/features/Image_translation/screen/image_result_screen.dart';
 import 'package:translator_app_polyglot/features/presentation/screens/homescreen.dart';
+import 'package:translator_app_polyglot/core/utils/app_logger.dart';
 
 class ImageTranslationScreen extends StatefulWidget {
   const ImageTranslationScreen({super.key});
@@ -23,6 +24,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
   final TranslationService _translationService = TranslationService();
 
   String _targetLanguageCode = "en";
+  // ignore: unused_field
   String _targetLanguageName = "English";
 
   Future<void> _pickImageFromGallery() async {
@@ -37,7 +39,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
         _selectedImage = File(pickedFile.path);
       });
     } else {
-      print("No image selected.");
+      AppLogger.w("No image selected.");
     }
   }
 
@@ -52,7 +54,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
         _selectedImage = File(pickedFile.path);
       });
     } else {
-      print("No image taken.");
+      AppLogger.w("No image taken.");
     }
   }
 
@@ -66,6 +68,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
 
       if (recognizedText.trim().isEmpty ||
           recognizedText.startsWith("Error:")) {
+            if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Could not find any text in the image")),
         );
@@ -79,7 +82,7 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
         recognizedText,
         _targetLanguageCode,
       );
-
+      if (!mounted) return;
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ImageResultScreen(
@@ -92,7 +95,9 @@ class _ImageTranslationScreenState extends State<ImageTranslationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("An error occurred during translation.")),
       );
-      print("Error during image translation process : $e");
+      AppLogger.e(
+        "Error during image translation process",
+        error: e);
     } finally {
       setState(() {
         _isProcessing = false;

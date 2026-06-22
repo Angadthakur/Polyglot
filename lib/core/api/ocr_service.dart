@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:translator_app_polyglot/core/utils/app_logger.dart';
 
 class OcrService {
   Future<String> recognizeText(File imageFile) async {
@@ -17,7 +17,10 @@ class OcrService {
 
       return extractedText;
     } catch (e) {
-      print("Error recognizing text : $e");
+      AppLogger.e(
+        "Error recognizing text",
+        error: e,
+        );
       return "Error : Could not recognize text from the image";
     } finally {
       textRecognizer.close();

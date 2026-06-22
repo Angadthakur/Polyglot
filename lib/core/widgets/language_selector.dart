@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:translator_app_polyglot/core/utils/constants.dart';
-import 'package:translator_app_polyglot/features/Text_translation/screen/text_translation.dart';
-
 
 class Language {
   final String name;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:translator_app_polyglot/features/Image_translation/screen/image_translation_screen.dart';
 import 'package:translator_app_polyglot/features/Text_translation/screen/text_translation.dart';
 import 'package:translator_app_polyglot/features/presentation/widgets/feature_card.dart';
+import 'package:translator_app_polyglot/core/utils/app_logger.dart';
 
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
@@ -38,47 +39,49 @@ class Homescreen extends StatelessWidget {
             ),
           ),
           child: SafeArea(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 40),
-                    
-                  Image.asset('assets/languages.png', height: 120, width: 120),
-                    
-                  SizedBox(height: 40),
-                    
-                  FeatureCard(
-                    title: "Text Translation",
-                    subtitle: "Type or paste any text to translate instantly.",
-                    icon: Icons.text_fields,
-                    onTap: () {
-                      //Navigate to the Text Translation screen
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const TextTranslation(),
-                        ),
-                      );
-                      print("Text Translation Tapped!");
-                    },
-                  ),
-
-                  FeatureCard(
-                    title: 'Image Translation',
-                    subtitle:
-                        "Use your camera to translate text from the world around you.",
-                    icon: Icons.camera_alt,
-                    onTap: () {
-                      //Navigate to the Image Translation screen
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ImageTranslationScreen(),
-                        ),
-                      );
-                      print('Image Translation Tapped!');
-                    },
-                  ),
-                ],
-              ),
+            child: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 40),
+                      
+                    Image.asset('assets/languages.png', height: 120, width: 120),
+                      
+                    SizedBox(height: 40),
+                      
+                    FeatureCard(
+                      title: "Text Translation",
+                      subtitle: "Type or paste any text to translate instantly.",
+                      icon: Icons.text_fields,
+                      onTap: () {
+                        //Navigate to the Text Translation screen
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const TextTranslation(),
+                          ),
+                        );
+                        AppLogger.i("Text Translation Tapped!");
+                      },
+                    ),
+              
+                    FeatureCard(
+                      title: 'Image Translation',
+                      subtitle:
+                          "Use your camera to translate text from the world around you.",
+                      icon: Icons.camera_alt,
+                      onTap: () {
+                        //Navigate to the Image Translation screen
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ImageTranslationScreen(),
+                          ),
+                        );
+                        AppLogger.i('Image Translation Tapped!');
+                      },
+                    ),
+                  ],
+                ),
+            ),
             
           ),
         ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+//import 'package:flutter_tts/flutter_tts.dart';
 import 'package:translator_app_polyglot/core/api/translation_service.dart';
 import 'package:translator_app_polyglot/core/utils/constants.dart';
 import 'package:translator_app_polyglot/features/Text_translation/widgets/input_text_field.dart';
 import 'package:translator_app_polyglot/features/Text_translation/widgets/translated_text_field.dart';
-import 'package:translator_app_polyglot/features/presentation/screens/homescreen.dart';
 import 'package:translator_app_polyglot/core/widgets/language_selector.dart';
+import 'package:translator_app_polyglot/core/utils/app_logger.dart';
 
 
 class TextTranslation extends StatefulWidget {
@@ -21,7 +21,7 @@ class _TextTranslationState extends State<TextTranslation> {
 
   final TextEditingController _textController = TextEditingController();
 
-  final FlutterTts _flutterTts = FlutterTts();
+  //final FlutterTts _flutterTts = FlutterTts();
 
   String _sourceLanguage = 'Auto Detect';
   String _targetLanguageCode = 'es';
@@ -63,7 +63,7 @@ class _TextTranslationState extends State<TextTranslation> {
       setState(() {
         _translatedText = "Error: Could not translate.";
       });
-      print(e);
+      AppLogger.e(e);
     } finally {
       setState(() {
         _isLoading =
@@ -91,7 +91,6 @@ class _TextTranslationState extends State<TextTranslation> {
       setState(() {
   
   final tempSourceLangName = _sourceLanguage;
-  final tempTargetLangCode = _targetLanguageCode;
   final tempTargetLangName = _targetLanguageName;
   final tempInputText = _textController.text;
   final tempTranslatedText = _translatedText;
@@ -111,15 +110,17 @@ class _TextTranslationState extends State<TextTranslation> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cannot swap: Language not supported for selection.')),
       );
-      print("Could not find the source language in the supported list: $e");
+      AppLogger.e(
+        "Could not find the source language in the supported list",
+        error: e);
           }
   }
 
   //Text-to-speech Logic
-   Future<void> _onListenPressed() async {
+   /*Future<void> _onListenPressed() async {
     
     if (_translatedText.isEmpty || _translatedText == "Translation will appear here..." || _translatedText.startsWith("Error:")) {
-      print("Nothing to speak.");
+      AppLogger.w("Nothing to speak.");
       return;
     }
 
@@ -131,12 +132,15 @@ class _TextTranslationState extends State<TextTranslation> {
       
       await _flutterTts.speak(_translatedText);
     } catch (e) {
-      print("Error with TTS: $e");
+      AppLogger(
+      "Error with TTS",
+      error: e);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Text-to-speech is not available for this language.')),
       );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +158,7 @@ class _TextTranslationState extends State<TextTranslation> {
           onPressed: () {
             Navigator.of(context).pop();
 
-            print("Back to Home Screen");
+            AppLogger.i("Back to Home Screen");
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -181,8 +185,8 @@ class _TextTranslationState extends State<TextTranslation> {
             begin: AlignmentDirectional.centerStart,
             end: AlignmentDirectional.bottomEnd,
             colors: [
-              const Color.fromARGB(255, 218, 167, 227),
-              const Color.fromARGB(255, 186, 52, 210),
+              Color.fromARGB(255, 218, 167, 227),
+              Color.fromARGB(255, 186, 52, 210),
             ],
           ),
         ),
