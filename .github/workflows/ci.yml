@@ -80,6 +80,9 @@ jobs:
             - name: Build Release APK
               run: flutter build apk --release  
 
+            - name: List build outputs
+              run: find build/ -name "*.apk" 2>/devl/null  
+
             - name: Upload APK artifact
               uses: actions/upload-artifact@v4
               with:
