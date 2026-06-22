@@ -80,12 +80,9 @@ jobs:
             - name: Build Release APK
               run: flutter build apk --release  
 
-            - name: List build outputs
-              run: find build/ -name "*.apk"
-
             - name: Upload APK artifact
               uses: actions/upload-artifact@v4
               with:
                 name: polyglot-release-apk
-                path: build/outputs/flutter-apk/app-release.apk
+                path: build/app/outputs/flutter-apk/app-release.apk
                 retention-days: 30  
