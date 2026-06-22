@@ -29,3 +29,26 @@ jobs:
         - name: Run Flutter Analyze
           run: flutter analyze  
 
+ test:
+        name: Flutter Test
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        needs: analyze
+
+        steps: 
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                flutter-version: '3.32.8'
+                channel: 'stable'
+                cache: true
+                
+            - name: Install dependencies
+              run: flutter pub get
+              
+            - name: Run Flutter Tests
+              run: flutter test --coverage  
+
