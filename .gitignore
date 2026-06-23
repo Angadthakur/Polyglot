@@ -45,3 +45,8 @@ app.*.map.json
 /android/app/release
 
 .metadata
+
+android/app/keystore.jks
+android/app/*.jks
+android/app/*.keystore
+polyglot-release-base64.txt
