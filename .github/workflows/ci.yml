@@ -1,135 +1,206 @@
-name : Flutter CI
+name: Flutter CI
 
 on:
   push:
-   branches: 
-     - main
+    branches:
+      - main
   pull_request:
-     branches:
-       -main
-  workflow_dispatch:       
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
- analyze:
+  analyze:
     name: Flutter Analyze
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    steps: 
-        - name: Checkout repository
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.2'
+          channel: 'stable'
+          cache: true
 
-        - name: Set up Flutter
-          uses: subosito/flutter-action@v2
-          with:
-              flutter-version: '3.32.8'
-              channel: 'stable'
-              cache: true
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
-        - name: Cache pub dependencies
-          uses: actions/cache@v4
-          with:
-             path: -/.pub-cache
-             key : ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-             restore-keys: |
-              ${{ runner.os }}-pub-      
+      - name: Install dependencies
+        run: flutter pub get
 
-        - name: Install dependencies
-          run: flutter pub get
-          
-        - name: Run Flutter Analyze
-          run: flutter analyze  
+      - name: Run Flutter Analyze
+        run: flutter analyze
 
- test:
-        name: Flutter Test
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
-        needs: analyze
+  test:
+    name: Flutter Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: analyze
 
-        steps: 
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Set up Flutter
-              uses: subosito/flutter-action@v2
-              with:
-                flutter-version: '3.32.8'
-                channel: 'stable'
-                cache: true
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.2'
+          channel: 'stable'
+          cache: true
 
-            - name: Cache pub dependencies
-              uses: actions/cache@v4
-              with:
-                 path: -/.pub-cache
-                 key : ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-                 restore-keys: |
-                  ${{ runner.os }}-pub-   
-                
-            - name: Install dependencies
-              run: flutter pub get
-              
-            - name: Run Flutter Tests
-              run: flutter test --coverage  
- build:
-        name: Build APK
-        runs-on: ubuntu-latest
-        timeout-minutes: 30
-        needs: test
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+      - name: Install dependencies
+        run: flutter pub get
 
-            - name: Set up Java
-              uses: actions/setup-java@v4
-              with:
-                distribution: 'temurin'
-                java-version: '17'
-                
-            - name: Set up Flutter
-              uses: subosito/flutter-action@v2
-              with:
-                flutter-version: '3.32.8'
-                channel: 'stable'
-                cache: true    
-             
-            - name: Cache pub dependencies
-              uses: actions/cache@v4
-              with:
-                path: -/.pub-cache 
-                key : ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-                restore-keys: |
-                  ${{ runner.os }}-pub-
-                    
-            - name: Cache Gradle dependencies
-              uses: actions/cache@v4
-              with:
-                path: |
-                  ~/.gradle/caches
-                  ~/.gradle/wrapper/
-                key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts*','**/gradle-wrapper.properties' ) }}
-                restore-keys: |
-                  ${{ runner.os }}-gradle-          
+      - name: Run Flutter Tests
+        run: flutter test --coverage
 
-            - name: Install dependencies    
-              run: flutter pub get
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: test
 
-            - name: Decode keystore
-              run: |
-                echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Build Release APK
-              env:
-                KEYSTORE_PATH: keystore.jks
-                KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-                KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-                KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-              run: flutter build apk --release  
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-            - name: Upload APK artifact
-              uses: actions/upload-artifact@v4
-              with:
-                name: polyglot-release-apk
-                path: build/app/outputs/flutter-apk/app-release.apk
-                retention-days: 30  
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.2'
+          channel: 'stable'
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+
+      - name: Build Release APK
+        env:
+          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: polyglot-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+  deploy:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.2'
+          channel: 'stable'
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+
+      - name: Build Release APK
+        env:
+          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: flutter build apk --release
+
+      - name: Deploy to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: |
+            Build from commit ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+            Triggered by: ${{ github.actor }}
+            
